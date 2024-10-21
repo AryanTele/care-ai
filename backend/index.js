@@ -1,5 +1,8 @@
 import OpenAI from "openai";
-const openai = new OpenAI({ apiKey: apiKey });
+import dotenv from "dotenv";
+dotenv.config();
+const apiKey = process.env.OPENAI_API_KEY;
+const openai = new OpenAI({ apiKey });
 
 const completion = await openai.chat.completions.create({
   model: "gpt-4o-mini",
