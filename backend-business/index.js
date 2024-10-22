@@ -1,11 +1,12 @@
 import express from "express";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
+import owner from "./model/owner";
 const app = express();
 app.use(express.json());
 dotenv.config();
 
-app.post("/user", (req, res) => {
+app.post("/registerUser", (req, res) => {
   const {
     businessOwnerName,
     businessName,
@@ -17,8 +18,7 @@ app.post("/user", (req, res) => {
     businessDomain,
     businessSocials,
   } = req.body;
-
-  res.send({
+  const newOwner = owner.create({
     businessOwnerName,
     businessName,
     businessDescription,
@@ -28,6 +28,12 @@ app.post("/user", (req, res) => {
     businessWebsite,
     businessDomain,
     businessSocials,
+  });
+
+  res.send({
+    success: true,
+    message: "Owner created successfully",
+    data: newOwner,
   });
 });
 
