@@ -1,5 +1,5 @@
 
-# Care AI - Your Personal AI Powered Customer Service Represntative
+# Care AI - AI Powered Customer Service Represntative
 
 
 Boost your customer service efficiency with Care AI—an intelligent, voice-powered assistant that’s always ready to engage with customers who need attention. Traditional customer service works, but why not take it to the next level and increase efficiency up to 10x with Care AI? Let us help your business stay ahead by providing seamless, proactive support.
