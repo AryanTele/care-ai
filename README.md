@@ -1,10 +1,4 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
-
-<<<<<<< HEAD
 # Care AI - AI Powered Customer Service Represntative
-=======
-## Getting Started
->>>>>>> f5eb9b0 (nextjs setup project directory)
 
 First, run the development server:
 
