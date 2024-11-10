@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "mongoose": "^8.8.1",
     "next": "15.0.2",
     "openai": "^4.71.1",
     "react": "19.0.0-rc-02c0e824-20241028",
