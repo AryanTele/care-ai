@@ -4,11 +4,17 @@ import { OpenAI } from "openai";
 import { NextResponse, NextRequest } from "next/server";
 import businessUser from "@/models/businessUser";
 import { connectDB } from "@/controllers/connectDB";
+
 // Set up OpenAI configuration with your API key
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+// Conversation history and introduction tracking
+let conversationHistory = "";
+let hasIntroduced = false; // Tracks if introduction has been made
+
 export async function POST(req: NextRequest) {
-  let conversationHistory = "";
   const { question, id } = await req.json();
+
   if (!question) {
     return NextResponse.json(
       { message: "Please provide a question" },
@@ -18,7 +24,7 @@ export async function POST(req: NextRequest) {
 
   try {
     connectDB();
-    // Serach User Id in Db
+    // Search User Id in DB
     const bUser = await businessUser.findById(id);
     const {
       businessAddress,
@@ -28,42 +34,33 @@ export async function POST(req: NextRequest) {
       businessWebsite,
     } = bUser!;
 
-    // Set up the prompt for the OpenAI API
-    const prompt =
-      conversationHistory == ""
-        ? `
-    Introduce yourself as: I am care ai, a customer service representative.
-    Always analyze the previous conversation history before answering and make use of already answered questions.
-    
-    Please keep in mind that my responses will focus only on information relevant to your business inquiries. I will ensure accuracy and avoid answering questions outside the scope of business matters.
-    
-    Now, here's the information provided for context:
-    
-    - **Business Name**: ${businessName}
-    - **Business Address**: ${businessAddress}
-    - **Business Phone**: ${businessPhone}
-    - **Business Email**: ${businessEmail}
-    - **Business Website**: ${businessWebsite}
-    Previous Conversation History:${conversationHistory}
-    Question: ${question}
-    
-    Please answer with business-focused information only.
-    `
-        : `
-        Always analyze the previous conversation history before answering and make use of already answered questions.Please keep in mind that my responses will focus only on information relevant to your business inquiries. I will ensure accuracy and avoid answering questions outside the scope of business matters.
-    
-    Now, here's the information provided for context:
-    
-    - **Business Name**: ${businessName}
-    - **Business Address**: ${businessAddress}
-    - **Business Phone**: ${businessPhone}
-    - **Business Email**: ${businessEmail}
-    - **Business Website**: ${businessWebsite}
-    Previous Conversation History:${conversationHistory}
-    Question: ${question}
-    
-    Please answer with business-focused information only.
+    // Set up the introductory text if not already introduced
+    const introText = !hasIntroduced
+      ? `
+      Introduce yourself as "I am care AI, a customer service representative."
+      My responses will focus on business information relevant to your inquiries, ensuring accuracy and avoiding unrelated information.
+      
+      Now, here's the information provided for context:
+      
+      - **Business Name**: ${businessName}
+      - **Business Address**: ${businessAddress}
+      - **Business Phone**: ${businessPhone}
+      - **Business Email**: ${businessEmail}
+      - **Business Website**: ${businessWebsite}
+      `
+      : ""; // Empty if already introduced
+
+    // Set up the main prompt for OpenAI API
+    const prompt = `
+      ${introText}
+      Previous Conversation History: ${conversationHistory}
+      Question: ${question}
+      
+      Please answer with business-focused information only.
     `;
+
+    // Update introduction flag
+    hasIntroduced = true;
 
     // Make a request to the OpenAI API
     const completion = await openai.chat.completions.create({
@@ -72,8 +69,10 @@ export async function POST(req: NextRequest) {
     });
 
     // Extract the answer from the API response
-    conversationHistory += completion.choices[0].message.content;
     const answer = completion.choices[0].message.content;
+
+    // Update conversation history
+    conversationHistory += `\nUser: ${question}\nAI: ${answer}`;
 
     // Send the answer back to the client
     return NextResponse.json({ answer });
