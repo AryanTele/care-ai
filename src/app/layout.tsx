@@ -1,9 +1,12 @@
+import { useEffect } from "react";
+import { useRouter } from "next/router";
 import {
   ClerkProvider,
   SignInButton,
   SignedIn,
   SignedOut,
   UserButton,
+  useAuth,
 } from "@clerk/nextjs";
 import "./globals.css";
 
@@ -12,6 +15,15 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const { isSignedIn } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (isSignedIn) {
+      router.push("/dashboard");
+    }
+  }, [isSignedIn, router]);
+
   return (
     <ClerkProvider>
       <html lang="en">
