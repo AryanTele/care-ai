@@ -1,7 +1,8 @@
 import React from "react";
+import StepTwo from "./StepTwo";
 
 const page = () => {
-  return <div>page</div>;
+  return <StepTwo />;
 };
 
 export default page;
