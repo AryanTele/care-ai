@@ -1,7 +1,7 @@
 import React from "react";
-
-const StepThree = () => {
+import StepThree from "./StepThree";
+const page = () => {
   return <StepThree />;
 };
 
-export default StepThree;
+export default page;
