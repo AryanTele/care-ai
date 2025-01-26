@@ -1,5 +1,6 @@
 import { Payment, columns } from "./columns";
 import { DataTable } from "./data-table";
+import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 
 async function getData(): Promise<Payment[]> {
   // Fetch data from your API here.
@@ -49,7 +50,24 @@ export default async function DemoPage() {
 
   return (
     <div className="container w-[60%] mx-auto py-10">
-      <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
+      {/* Header Section with Auth Buttons */}
+      <header className="flex justify-between items-center mb-4">
+        <h1 className="text-2xl font-bold">Dashboard</h1>
+        <div>
+          <SignedOut>
+            <SignInButton>
+              <button className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">
+                Sign In
+              </button>
+            </SignInButton>
+          </SignedOut>
+          <SignedIn>
+            <UserButton />
+          </SignedIn>
+        </div>
+      </header>
+
+      {/* DataTable Section */}
       <DataTable columns={columns} data={data} />
     </div>
   );
